@@ -33,3 +33,13 @@ describe("GET /api/topics", () => {
       });
     });
 });
+
+describe("GET /api", () => {
+  test("200: sends API documentation", async () => {
+    await request(app).get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(require("../endpoints.json"));
+      });
+  });
+});
