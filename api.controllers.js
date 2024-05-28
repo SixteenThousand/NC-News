@@ -1,6 +1,8 @@
 const models = require("./api.models");
 
-function getTopics(request,response) {
+async function getTopics(request,response,next) {
+  const topicData = await models.getAllTopics();
+  response.status(200).send(topicData);
 }
 
 
