@@ -21,9 +21,11 @@ describe("getAllTopics", () => {
   test("each object in the returned array has the correct shape",
     async () => {
       const topicData = await models.getAllTopics();
-      expect(topicData).toMatchObject({
-        slug: expect.any(String),
-        description: expect.any(String),
+      topicData.forEach((item) => {
+        expect(item).toMatchObject({
+          slug: expect.any(String),
+          description: expect.any(String),
+        });
       });
     }
   );
