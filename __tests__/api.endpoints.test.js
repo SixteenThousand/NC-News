@@ -4,7 +4,11 @@ const db = require("../db/connection");
 const app = require("../app");
 
 beforeEach(async () => {
-  await seed(testData).then(() => { db.end(); });
+  await seed(testData);
+});
+
+afterAll(async () => {
+  await db.end();
 });
 
 describe("GET /api/topics", () => {
