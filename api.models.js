@@ -20,7 +20,14 @@ async function getArticleById(id) {
     `SELECT * FROM articles WHERE article_id = $1`,
     [id])
     .then(({ rows }) => {
-      return rows[0];
+      if(rows.length > 0) {
+        return rows[0];
+      } else {
+        return Promise.reject({
+          status: 404,
+          msg: "Not Found",
+        });
+      }
     });
 }
 
