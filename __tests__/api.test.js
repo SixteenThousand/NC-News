@@ -109,3 +109,46 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles", () => {
+  test("model retrieves data with the right shape, sorted by date," +
+    "latest first",
+    async () => {
+      const articleData = await models.getArticles();
+      expect(Array.isArray(articleData)).toBe(true);
+      expect(articleData[0]).toMatchObject({
+        author: expect.any(String),
+        title: expect.any(String),
+        article_id: expect.any(Number),
+        body: expect.any(String),
+        topic: expect.any(String),
+        created_at: expect.any(Date),
+        votes: expect.any(Number),
+        article_img_url: expect.any(String),
+        comment_count: expect.any(Number),
+      });
+      expect(articleData).toBeSortedBy("created_at",{ descending: true });
+    }
+  );
+  test("200: sends data with the correct type, sorted by date, latest first",
+    async () => {
+      await request(app).get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0]).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+              // ^this is different to the model test
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+          expect(body).toBeSortedBy("created_at",{ descending: true });
+        });
+    }
+  );
+});
