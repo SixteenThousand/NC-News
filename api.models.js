@@ -31,8 +31,19 @@ async function getArticleById(id) {
     });
 }
 
+async function getArticles() {
+  return db.query(
+    `SELECT articles.*, COUNT(comment_id) AS comment_count
+      FROM articles JOIN comments ON articles.article_id = comments.comment_id
+      GROUP BY articles.article_id;`)
+    .then(({ rows }) => {
+      return rows;
+    });
+}
+
 
 module.exports = {
   getAllTopics,
   getArticleById,
+  getArticles,
 };
