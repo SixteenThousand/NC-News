@@ -85,4 +85,18 @@ describe("GET /api/articles/:article_id", () => {
         expect(body).toEqual(testData.articleData[0]);
       });
   });
+  test("400: sends a bad request if passed a non-number", async () => {
+    await request(app).get("/api/article/pineapple")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: sends Not Found if passed an invalid id number", async () => {
+    await request(app).get("/api/article/20000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
 });
