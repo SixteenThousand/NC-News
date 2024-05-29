@@ -6,8 +6,9 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
-    "test": "jest",
-    "prepare": "husky install"
+    "test": "jest --verbose=false",
+    "prepare": "husky install",
+    "listen": "node ./listen.js"
   },
   "repository": {
     "type": "git",
