@@ -75,6 +75,18 @@ async function getCommentsByArticle(articleId) {
       }
     });
 }
+ 
+async function insertComment(comment) {
+  return db.query(
+    `INSERT INTO comments (author,article_id,body) VALUES
+      ($1,$2,$3)
+      RETURNING *;`,
+    [comment.username, comment.article_id, comment.body])
+    .then(({ rows }) => {
+      return rows[0];
+    });
+}
+
 
 
 module.exports = {
@@ -82,4 +94,5 @@ module.exports = {
   getArticleById,
   getAllArticles,
   getCommentsByArticle,
+  insertComment,
 };

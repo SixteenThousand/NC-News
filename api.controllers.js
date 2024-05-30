@@ -40,6 +40,13 @@ async function getCommentsByArticle(request,response,next) {
     .catch(next);
 }
 
+async function postComment(request,response,next) {
+  models.insertComment(request.body)
+    .then((postedComment) => {
+      response.status(201).send({ postedComment });
+    });
+}
+
 
 // error handlers
 async function handlePostgresErrors(err,request,response,next) {
@@ -70,6 +77,7 @@ module.exports = {
   getArticlesParamId,
   getArticles,
   getCommentsByArticle,
+  postComment,
   handleCustomErrors,
   handlePostgresErrors,
 };
