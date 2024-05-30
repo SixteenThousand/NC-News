@@ -69,7 +69,7 @@
       }
     ] }
   },
-  "GET /api/articles/:article_id": {
+  "GET /api/articles/:article_id/comments": {
     "description": "serves a list of the comments made on the given article",
     "queries": [],
     "exampleResponse": {
