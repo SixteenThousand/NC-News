@@ -158,7 +158,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     await request(app).get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        const data = body.comments
+        const data = body.comments;
         expect(Array.isArray(data)).toBe(true)
         expect(data[0]).toMatchObject({
           comment_id: expect.any(Number),
@@ -169,6 +169,20 @@ describe("GET /api/articles/:article_id/comments", () => {
           article_id: 1,
         });
         expect(data).toBeSortedBy("created_at",{ descending: true });
+      });
+  });
+  test("404: sends Not Found when passed an invalid id number", async () => {
+    await request(app).get("/api/articles/3000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+  test("400: sends Bad Request when passed a non-number", async () => {
+    await request(app).get("/api/articles/fish/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
       });
   });
 });
