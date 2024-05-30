@@ -31,11 +31,12 @@ async function getArticleById(id) {
     });
 }
 
-async function getArticles() {
+async function getAllArticles() {
   return db.query(
-    `SELECT articles.*, COUNT(comment_id) AS comment_count
+    `SELECT articles.*, COUNT(comment_id)::INTEGER AS comment_count
       FROM articles JOIN comments ON articles.article_id = comments.comment_id
-      GROUP BY articles.article_id;`)
+      GROUP BY articles.article_id
+      ORDER BY articles.created_at DESC;`)
     .then(({ rows }) => {
       return rows;
     });
@@ -45,5 +46,5 @@ async function getArticles() {
 module.exports = {
   getAllTopics,
   getArticleById,
-  getArticles,
+  getAllArticles,
 };

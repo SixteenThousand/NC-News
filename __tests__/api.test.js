@@ -116,7 +116,7 @@ describe("GET /api/articles", () => {
   test("model retrieves data with the right shape, sorted by date," +
     "latest first",
     async () => {
-      const articleData = await models.getArticles();
+      const articleData = await models.getAllArticles();
       expect(Array.isArray(articleData)).toBe(true);
       expect(articleData[0]).toMatchObject({
         author: expect.any(String),
