@@ -23,6 +23,12 @@ async function getArticlesParamId(request,response,next) {
   }
 }
 
+async function getArticles(request,response,next) {
+  models.getAllArticles()
+    .then((data) => {
+      response.status(200).send({ "articles": data });
+    });
+}
 
 // error handlers
 async function handleErrors(err,request,response,next) {
@@ -39,4 +45,5 @@ module.exports = {
   getApiHelp,
   getArticlesParamId,
   handleErrors,
+  getArticles,
 };
