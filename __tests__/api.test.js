@@ -152,3 +152,21 @@ describe("GET /api/articles", () => {
     }
   );
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  test("model", async () => {
+    await request(app).get("/api/articles/1/comments")
+      .then((data) => {
+        expect(Array.isArray(data.comments)).toBe(true)
+        expect(data.comments[0]).toMatchObject({
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(Date),
+          author: expect.any(String),
+          body: expect.any(String),
+          article_id: 1,
+        });
+        expect(data.comments).toBeSortedBy("created_at",{ descending: true });
+      });
+  });
+});
