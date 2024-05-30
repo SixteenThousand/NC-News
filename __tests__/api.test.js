@@ -186,3 +186,39 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: posts a valid comment object and sends it back", async () => {
+    // the article we will try to post on
+    const articleId = 1;
+    // the comment we will try to post
+    const ourComment = {
+        username: "toiletman66",
+        body: "WhY isN't' this artrGicle about toilets??"
+    };
+    // the shape our comment should have once in the DB
+    const commentMatcher = {
+      comment_id: expect.any(Number),
+      votes: expect.any(Number),
+      created_at: expect.any(String),
+      author: ourComment.username,
+      body: ourComment.body,
+      article_id: expect.any(Number),
+    };
+    // checking that we get the right body back
+    await request(app).post(`/api/articles/${articleId}/comments`)
+      .set("Content-Type","application/json")
+      .send(ourComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.postedComment).toMatchObject(commentMatcher);
+      });
+    // checking that the database has been updated correctly
+    await db.query(
+      `SELECT * FROM comments WHERE article_id = ${articleId}`)
+      .then(({ rows }) => {
+        expect(rows).toHaveLength(19); // make sure this tracks with test data
+        expect(rows).toEqual(expect.arrayContaining([ commentMatcher ]));
+      });
+  });
+});
