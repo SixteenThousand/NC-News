@@ -221,4 +221,46 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(rows).toEqual(expect.arrayContaining([ commentMatcher ]));
       });
   });
+  test("404: sends an error when passed an invalid id number", async () => {
+    // the comment we will try to post
+    const ourComment = {
+        username: "toiletman66",
+        body: "WhY isN't' this artrGicle about toilets??"
+    };
+    await request(app).post(`/api/articles/96321/comments`)
+      .set("Content-Type","application/json")
+      .send(ourComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+  test("400: sends an error when passed a non-number as the id", async () => {
+    // the comment we will try to post
+    const ourComment = {
+        username: "toiletman66",
+        body: "WhY isN't' this artrGicle about toilets??"
+    };
+    await request(app).post(`/api/articles/orange/comments`)
+      .set("Content-Type","application/json")
+      .send(ourComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("400: sends an error if request body isn't the right shape",
+    async () => {
+      const ourComment = {
+          body: "WhY isN't' this artrGicle about toilets??"
+      };
+      await request(app).post(`/api/articles/1/comments`)
+        .set("Content-Type","application/json")
+        .send(ourComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    }
+  );
 });
