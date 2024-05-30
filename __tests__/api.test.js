@@ -5,6 +5,8 @@ const db = require("../db/connection");
 const app = require("../app");
 const models = require("../api.models.js");
 const request = require("supertest");
+require("jest-sorted");
+
 
 beforeEach(async () => {
   await seed(testData);
