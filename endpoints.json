@@ -43,7 +43,7 @@
   "GET /api/articles": {
     "description": "serves a list of all the articles, including a count of their comments, in reverse chronological order",
     "queries": [],
-    "exampleResponse": [
+    "exampleResponse": { "articles": [
       {
         "article_id": 34,
         "title": "The Notorious MSG’s Unlikely Formula For Success",
@@ -84,6 +84,6 @@
         "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
         "comment_count": 1
       }
-    ]
+    ] }
   }
 }

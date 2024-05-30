@@ -136,7 +136,7 @@ describe("GET /api/articles", () => {
       await request(app).get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          expect(body[0]).toMatchObject({
+          expect(body.articles[0]).toMatchObject({
             author: expect.any(String),
             title: expect.any(String),
             article_id: expect.any(Number),
@@ -147,7 +147,7 @@ describe("GET /api/articles", () => {
             article_img_url: expect.any(String),
             comment_count: expect.any(Number),
           });
-          expect(body).toBeSortedBy("created_at",{ descending: true });
+          expect(body.articles).toBeSortedBy("created_at",{ descending: true });
         });
     }
   );
