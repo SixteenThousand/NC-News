@@ -30,6 +30,16 @@ async function getArticles(request,response,next) {
     });
 }
 
+async function getCommentsByArticle(request,response,next) {
+  models.getCommentsByArticle(request.params.article_id)
+    .then((data) => {
+      response.status(200).send({
+        "comments": data
+      });
+    })
+}
+
+
 // error handlers
 async function handleErrors(err,request,response,next) {
   if(err.msg && err.status) {
@@ -46,4 +56,5 @@ module.exports = {
   getArticlesParamId,
   handleErrors,
   getArticles,
+  getCommentsByArticle,
 };
