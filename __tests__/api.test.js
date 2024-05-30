@@ -153,20 +153,22 @@ describe("GET /api/articles", () => {
   );
 });
 
-describe("/api/articles/:article_id/comments", () => {
-  test("model", async () => {
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: sends a list of comments when given a valid id", async () => {
     await request(app).get("/api/articles/1/comments")
-      .then((data) => {
-        expect(Array.isArray(data.comments)).toBe(true)
-        expect(data.comments[0]).toMatchObject({
+      .expect(200)
+      .then(({ body }) => {
+        const data = body.comments
+        expect(Array.isArray(data)).toBe(true)
+        expect(data[0]).toMatchObject({
           comment_id: expect.any(Number),
           votes: expect.any(Number),
-          created_at: expect.any(Date),
+          created_at: expect.any(String),
           author: expect.any(String),
           body: expect.any(String),
           article_id: 1,
         });
-        expect(data.comments).toBeSortedBy("created_at",{ descending: true });
+        expect(data).toBeSortedBy("created_at",{ descending: true });
       });
   });
 });
