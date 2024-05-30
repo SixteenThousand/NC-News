@@ -33,7 +33,15 @@ async function getArticleById(id) {
 
 async function getAllArticles() {
   return db.query(
-    `SELECT articles.*, COUNT(comment_id)::INTEGER AS comment_count
+    `SELECT
+      articles.author,
+      articles.title,
+      articles.article_id,
+      articles.topic,
+      articles.votes,
+      articles.created_at,
+      article_img_url,
+      COUNT(comment_id)::INTEGER AS comment_count
       FROM articles JOIN comments ON articles.article_id = comments.comment_id
       GROUP BY articles.article_id
       ORDER BY articles.created_at DESC;`)
