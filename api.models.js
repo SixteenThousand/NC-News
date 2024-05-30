@@ -63,7 +63,16 @@ async function getCommentsByArticle(articleId) {
       ORDER BY created_at DESC`,
     [articleId])
     .then(({ rows }) => {
-      return rows;
+      if(rows.length > 0) { 
+        return rows;
+      } else {
+        // note here we use the error handling of getArticleById
+        // to throw a 404
+        return getArticleById(articleId)
+          .then(() => {
+            return rows;
+          });
+      }
     });
 }
 

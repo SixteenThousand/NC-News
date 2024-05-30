@@ -37,11 +37,25 @@ async function getCommentsByArticle(request,response,next) {
         "comments": data
       });
     })
+    .catch(next);
 }
 
 
 // error handlers
-async function handleErrors(err,request,response,next) {
+async function handlePostgresErrors(err,request,response,next) {
+  if(!err.code) {
+    next(err,request,response,next);
+  }
+  switch(err.code) {
+    case "22P02":
+      response.status(400).send({ msg: "Bad Request" });
+      break;
+    default:
+      next(err,request,response,next);
+  }
+}
+
+async function handleCustomErrors(err,request,response,next) {
   if(err.msg && err.status) {
     response.status(err.status).send({ msg: err.msg });
   } else {
@@ -54,7 +68,8 @@ module.exports = {
   getTopics,
   getApiHelp,
   getArticlesParamId,
-  handleErrors,
   getArticles,
   getCommentsByArticle,
+  handleCustomErrors,
+  handlePostgresErrors,
 };
