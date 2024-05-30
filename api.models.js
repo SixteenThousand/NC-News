@@ -50,9 +50,36 @@ async function getAllArticles() {
     });
 }
 
+async function getCommentsByArticle(articleId) {
+  return db.query(
+    `SELECT
+      comment_id,
+      votes,
+      created_at,
+      author,
+      body,
+      article_id
+      FROM comments WHERE article_id = $1
+      ORDER BY created_at DESC`,
+    [articleId])
+    .then(({ rows }) => {
+      if(rows.length > 0) { 
+        return rows;
+      } else {
+        // note here we use the error handling of getArticleById
+        // to throw a 404
+        return getArticleById(articleId)
+          .then(() => {
+            return rows;
+          });
+      }
+    });
+}
+
 
 module.exports = {
   getAllTopics,
   getArticleById,
   getAllArticles,
+  getCommentsByArticle,
 };

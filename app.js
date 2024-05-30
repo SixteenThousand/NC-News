@@ -8,9 +8,11 @@ app.get("/api/topics", controllers.getTopics);
 app.get("/api", controllers.getApiHelp);
 app.get("/api/articles/:article_id", controllers.getArticlesParamId);
 app.get("/api/articles", controllers.getArticles);
+app.get("/api/articles/:article_id/comments", controllers.getCommentsByArticle);
 
 // error handlers
-app.use(controllers.handleErrors);
+app.use(controllers.handlePostgresErrors);
+app.use(controllers.handleCustomErrors);
 
 
 module.exports = app;
