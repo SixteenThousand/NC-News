@@ -92,5 +92,22 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a given comment to a given article",
+    "exampleRequestBody": {
+      "username": "rogersop",
+      "body": "lol"
+    },
+    "exampleResponse": {
+      "postedComment": {
+        "comment_id": 23,
+        "votes": 0,
+        "created_at": "2024-05-31T09:08:04.496Z",
+        "author": "rogersop",
+        "body": "lol",
+        "article_id": 9
+      }
+    }
   }
 }
