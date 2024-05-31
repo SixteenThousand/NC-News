@@ -377,8 +377,8 @@ describe("DELETE /api/comments/:comment_id", () => {
     async () => {
       await request(app).delete("/api/comments/20000000")
         .expect(404)
-        .then(({ msg }) => {
-          expect(msg).toBe("Not Found");
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
         });
     }
   );
@@ -386,8 +386,8 @@ describe("DELETE /api/comments/:comment_id", () => {
     async () => {
       await request(app).delete("/api/comments/:comment_id")
         .expect(400)
-        .then(({ msg }) => {
-          expect(msg).toBe("Bad Request");
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
         });
     }
   );
