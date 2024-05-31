@@ -87,6 +87,33 @@ async function insertComment(articleId,comment) {
     });
 }
 
+async function updateVotes(articleId,incVotes) {
+  return db.query(
+    `SELECT votes FROM articles WHERE article_id = $1`,
+    [articleId])
+    .then(({ rows }) => {
+      if(rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Not Found",
+        });
+      }
+      return rows[0].votes;
+    })
+    .then((currentVotes) => {
+      currentVotes += incVotes;
+      if(currentVotes < 0) currentVotes = 0;
+      return db.query(
+        `UPDATE articles
+          SET votes = $1 WHERE article_id = $2
+          RETURNING *;`,
+        [currentVotes, articleId]);
+    })
+    .then(({ rows }) => {
+      return rows[0];
+    });
+}
+
 
 module.exports = {
   getAllTopics,
@@ -94,4 +121,5 @@ module.exports = {
   getAllArticles,
   getCommentsByArticle,
   insertComment,
+  updateVotes,
 };
