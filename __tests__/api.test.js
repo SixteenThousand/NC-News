@@ -408,6 +408,8 @@ describe("GET /api/users", () => {
               name: expect.any(String),
               avatar_url: expect.any(String),
             });
+            // make sure we're leaking data we don't want to
+            expect(Object.keys(receivedUser)).toHaveLength(3);
           });
         });
     }
