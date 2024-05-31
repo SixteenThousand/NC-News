@@ -393,3 +393,23 @@ describe("DELETE /api/comments/:comment_id", () => {
     }
   );
 });
+
+describe("GET /api/users", () => {
+  test("200: sends a list of all users",
+    async () => {
+      await request(app).get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.users)).toBe(true);
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((receivedUser) => {
+            expect(receivedUser).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+        });
+    }
+  );
+});
