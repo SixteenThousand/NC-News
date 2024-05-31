@@ -186,3 +186,87 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: posts a valid comment object and sends it back", async () => {
+    // the article we will try to post on
+    const articleId = 1;
+    // the comment we will try to post
+    const ourComment = {
+        username: "rogersop",
+        body: "WhY isN't' this artrGicle about cabbages??"
+    };
+    // checking that we get the right body back
+    await request(app).post(`/api/articles/${articleId}/comments`)
+      .set("Content-Type","application/json")
+      .send(ourComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.postedComment).toMatchObject({
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: ourComment.username,
+          body: ourComment.body,
+          article_id: articleId,
+        });
+    });
+    // checking that the database has been updated correctly
+    await db.query(
+      `SELECT * FROM comments WHERE article_id = ${articleId}`)
+      .then(({ rows }) => {
+        expect(rows).toHaveLength(12); // make sure this tracks with test data
+        expect(rows).toEqual(expect.arrayContaining([{
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(Date),
+          author: ourComment.username,
+          body: ourComment.body,
+          article_id: articleId,
+        }]));
+      });
+  });
+  test("404: sends an error when passed an invalid id number", async () => {
+    // the comment we will try to post
+    const ourComment = {
+        username: "rogersop",
+        body: "WhY isN't' this artrGicle about cabbages??"
+    };
+    // checking that we get the right body back
+    await request(app).post(`/api/articles/96531/comments`)
+      .set("Content-Type","application/json")
+      .send(ourComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+  test("400: sends an error when passed a non-number as the id", async () => {
+    // the comment we will try to post
+    const ourComment = {
+        username: "rogersop",
+        body: "WhY isN't' this artrGicle about cabbages??"
+    };
+    await request(app).post(`/api/articles/orange/comments`)
+      .set("Content-Type","application/json")
+      .send(ourComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("400: sends an error if request body isn't the right shape",
+    async () => {
+      const ourComment = {
+          body: "WhY isN't' this artrGicle about cabbages??"
+      };
+      await request(app).post(`/api/articles/1/comments`)
+        .set("Content-Type","application/json")
+        .send(ourComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    }
+  );
+});
