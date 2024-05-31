@@ -366,10 +366,11 @@ describe("DELETE /api/comments/:comment_id", () => {
     async () => {
       await request(app).delete("/api/comments/1")
         .expect(204)
-        .then( async () => {
+        .then( async (response) => {
           const commentData = await db.query(
             `SELECT * FROM comments WHERE comment_id = 1`);
           expect(commentData.rows).toHaveLength(0);
+          expect(response.body).toEqual({});
         });
     }
   );
