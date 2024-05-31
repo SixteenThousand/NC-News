@@ -294,7 +294,7 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     }
   );
-  test.only("201: decrements the vote count by 1 if the vote count is already"
+  test("201: decrements the vote count by 1 if the vote count is already"
     + " at least 1",
     async () => {
       // note that article 1 has 100 votes
@@ -339,21 +339,21 @@ describe("PATCH /api/articles/:article_id", () => {
   );
   test("404: sends error when passed an invalid id number",
     async () => {
-      await request(app).patch("/api/articles/:article_id")
+      await request(app).patch("/api/articles/9000")
         .set("Content-Type","application/json")
         .send({ inc_votes: 1 })
-        .expect(201)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Not Found");
         });
-    },
+    }
   );
   test("400: sends error when passed an non-number as the article id",
     async () => {
       await request(app).patch("/api/articles/:article_id")
         .set("Content-Type","application/json")
         .send({ inc_votes: 1 })
-        .expect(201)
+        .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
         });
