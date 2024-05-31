@@ -360,3 +360,35 @@ describe("PATCH /api/articles/:article_id", () => {
     },
   );
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes comment when passed a valid comment id",
+    async () => {
+      await request(app).delete("/api/comments/1")
+        .expect(204)
+        .then( async () => {
+          const commentData = await db.query(
+            `SELECT * FROM comments WHERE comment_id = 1`);
+          expect(commentData.rows).toHaveLength(0);
+        });
+    }
+  );
+  test("404: sends error if passed an invalid id number",
+    async () => {
+      await request(app).delete("/api/comments/20000000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    }
+  );
+  test("400: sends error when passed a non-number as the id",
+    async () => {
+      await request(app).delete("/api/comments/:comment_id")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    }
+  );
+});

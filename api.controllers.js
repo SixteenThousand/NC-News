@@ -56,6 +56,14 @@ async function patchArticle(request,response,next) {
     .catch(next);
 }
 
+async function deleteComment(request,response,next) {
+  models.deleteCommentById(request.params.comment_id)
+    .then(() => {
+      response.status(204).send();
+    })
+    .catch(next);
+}
+
 
 // error handlers
 async function handlePostgresErrors(err,request,response,next) {
@@ -92,6 +100,7 @@ module.exports = {
   getCommentsByArticle,
   postComment,
   patchArticle,
+  deleteComment,
   handleCustomErrors,
   handlePostgresErrors,
 };
