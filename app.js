@@ -13,7 +13,8 @@ app.get("/api/articles", controllers.getArticles);
 app.get("/api/articles/:article_id/comments",
   controllers.getCommentsByArticle);
 app.post("/api/articles/:article_id/comments", controllers.postComment);
-app.patch("/api/articles/:article_id", controllers.patchArticle)
+app.patch("/api/articles/:article_id", controllers.patchArticle);
+app.delete("/api/comments/:comment_id", controllers.deleteComment);
 
 // error handlers
 app.use(controllers.handlePostgresErrors);
