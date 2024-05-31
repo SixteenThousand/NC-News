@@ -52,7 +52,8 @@ async function patchArticle(request,response,next) {
   models.updateVotes(request.params.article_id,request.body.inc_votes)
     .then((article) => {
       response.status(201).send({ article });
-    });
+    })
+    .catch(next);
 }
 
 

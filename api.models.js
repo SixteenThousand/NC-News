@@ -88,17 +88,27 @@ async function insertComment(articleId,comment) {
 }
 
 async function updateVotes(articleId,incVotes) {
-  const currentVotes = await db.query(
+  return db.query(
     `SELECT votes FROM articles WHERE article_id = $1`,
     [articleId])
     .then(({ rows }) => {
+      if(rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Not Found",
+        });
+      }
       return rows[0].votes;
-    });
-  return db.query(
-    `UPDATE articles
-      SET votes = $1 WHERE article_id = $2
-      RETURNING *;`,
-    [incVotes + currentVotes, articleId])
+    })
+    .then((currentVotes) => {
+      currentVotes += incVotes;
+      if(currentVotes < 0) currentVotes = 0;
+      return db.query(
+        `UPDATE articles
+          SET votes = $1 WHERE article_id = $2
+          RETURNING *;`,
+        [currentVotes, articleId]);
+    })
     .then(({ rows }) => {
       return rows[0];
     });
