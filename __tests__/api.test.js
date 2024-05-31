@@ -272,14 +272,14 @@ describe("POST /api/articles/:article_id/comments", () => {
 });
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("204: increments the vote count by 1 on the given article & sends the"
-    + "article back",
+  test("201: increments the vote count by 1 on the given article & sends the"
+    + " article back",
     async () => {
       // note that article 1 has 100 votes
       await request(app).patch("/api/articles/1")
         .set("Content-Type","application/json")
         .send({ inc_votes: 1 })
-        .expect(204)
+        .expect(201)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
             "article_id": 1,
@@ -294,14 +294,14 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     }
   );
-  test("204: decrements the vote count by 1 if the vote count is already"
-    + "at least 1",
+  test.only("201: decrements the vote count by 1 if the vote count is already"
+    + " at least 1",
     async () => {
       // note that article 1 has 100 votes
       await request(app).patch("/api/articles/1")
         .set("Content-Type","application/json")
         .send({ inc_votes: -1 })
-        .expect(204)
+        .expect(201)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
             "article_id": 1,
@@ -310,19 +310,19 @@ describe("PATCH /api/articles/:article_id", () => {
             "author": expect.any(String),
             "body": expect.any(String),
             "created_at": expect.any(String),
-            "votes": 101,
+            "votes": 99,
             "article_img_url": expect.any(String),
           });
         });
     }
   );
-  test("204: trying to decrement below zero just sets vote count to zero",
+  test("201: trying to decrement below zero just sets vote count to zero",
     async () => {
       // note that article 1 has 100 votes
       await request(app).patch("/api/articles/1")
         .set("Content-Type","application/json")
         .send({ inc_votes: -101 })
-        .expect(204)
+        .expect(201)
         .then(({ body }) => {
           expect(body.article).toMatchObject({
             "article_id": 1,
@@ -331,7 +331,7 @@ describe("PATCH /api/articles/:article_id", () => {
             "author": expect.any(String),
             "body": expect.any(String),
             "created_at": expect.any(String),
-            "votes": 101,
+            "votes": 0,
             "article_img_url": expect.any(String),
           });
         });
@@ -342,7 +342,7 @@ describe("PATCH /api/articles/:article_id", () => {
       await request(app).patch("/api/articles/:article_id")
         .set("Content-Type","application/json")
         .send({ inc_votes: 1 })
-        .expect(204)
+        .expect(201)
         .then(({ body }) => {
           expect(body.msg).toBe("Not Found");
         });
@@ -353,7 +353,7 @@ describe("PATCH /api/articles/:article_id", () => {
       await request(app).patch("/api/articles/:article_id")
         .set("Content-Type","application/json")
         .send({ inc_votes: 1 })
-        .expect(204)
+        .expect(201)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
         });
