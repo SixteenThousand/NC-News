@@ -48,6 +48,13 @@ async function postComment(request,response,next) {
     .catch(next);
 }
 
+async function patchArticle(request,response,next) {
+  models.updateVotes(request.params.article_id,request.body.inc_votes)
+    .then((article) => {
+      response.status(201).send({ article });
+    });
+}
+
 
 // error handlers
 async function handlePostgresErrors(err,request,response,next) {
@@ -83,6 +90,7 @@ module.exports = {
   getArticles,
   getCommentsByArticle,
   postComment,
+  patchArticle,
   handleCustomErrors,
   handlePostgresErrors,
 };

@@ -87,6 +87,23 @@ async function insertComment(articleId,comment) {
     });
 }
 
+async function updateVotes(articleId,incVotes) {
+  const currentVotes = await db.query(
+    `SELECT votes FROM articles WHERE article_id = $1`,
+    [articleId])
+    .then(({ rows }) => {
+      return rows[0].votes;
+    });
+  return db.query(
+    `UPDATE articles
+      SET votes = $1 WHERE article_id = $2
+      RETURNING *;`,
+    [incVotes + currentVotes, articleId])
+    .then(({ rows }) => {
+      return rows[0];
+    });
+}
+
 
 module.exports = {
   getAllTopics,
@@ -94,4 +111,5 @@ module.exports = {
   getAllArticles,
   getCommentsByArticle,
   insertComment,
+  updateVotes,
 };
