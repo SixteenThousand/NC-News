@@ -64,6 +64,13 @@ async function deleteComment(request,response,next) {
     .catch(next);
 }
 
+async function getUsers(request,response,next) {
+  models.getAllUsers()
+    .then((users) => {
+      response.status(200).send({ users });
+    });
+}
+
 
 // error handlers
 async function handlePostgresErrors(err,request,response,next) {
@@ -101,6 +108,7 @@ module.exports = {
   postComment,
   patchArticle,
   deleteComment,
+  getUsers,
   handleCustomErrors,
   handlePostgresErrors,
 };

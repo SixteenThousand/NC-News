@@ -15,6 +15,7 @@ app.get("/api/articles/:article_id/comments",
 app.post("/api/articles/:article_id/comments", controllers.postComment);
 app.patch("/api/articles/:article_id", controllers.patchArticle);
 app.delete("/api/comments/:comment_id", controllers.deleteComment);
+app.get("/api/users", controllers.getUsers);
 
 // error handlers
 app.use(controllers.handlePostgresErrors);

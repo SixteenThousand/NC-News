@@ -130,6 +130,13 @@ async function deleteCommentById(commentId) {
     });
 }
 
+async function getAllUsers() {
+  return db.query(`SELECT * FROM users;`,)
+    .then(({ rows }) => {
+      return rows;
+    });
+}
+
 
 module.exports = {
   getAllTopics,
@@ -139,4 +146,5 @@ module.exports = {
   insertComment,
   deleteCommentById,
   updateVotes,
+  getAllUsers,
 };
