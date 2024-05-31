@@ -76,17 +76,16 @@ async function getCommentsByArticle(articleId) {
     });
 }
  
-async function insertComment(comment) {
+async function insertComment(articleId,comment) {
   return db.query(
     `INSERT INTO comments (author,article_id,body) VALUES
       ($1,$2,$3)
       RETURNING *;`,
-    [comment.username, comment.article_id, comment.body])
+    [comment.username, articleId, comment.body])
     .then(({ rows }) => {
       return rows[0];
     });
 }
-
 
 
 module.exports = {

@@ -41,10 +41,11 @@ async function getCommentsByArticle(request,response,next) {
 }
 
 async function postComment(request,response,next) {
-  models.insertComment(request.body)
+  models.insertComment(request.params.article_id,request.body)
     .then((postedComment) => {
       response.status(201).send({ postedComment });
-    });
+    })
+    .catch(next);
 }
 
 
@@ -54,7 +55,11 @@ async function handlePostgresErrors(err,request,response,next) {
     next(err,request,response,next);
   }
   switch(err.code) {
-    case "22P02":
+    case "23503": // non-existent foreign key
+      response.status(404).send({ msg: "Not Found"});
+      break;
+    case "23502": // null value
+    case "22P02": // type error
       response.status(400).send({ msg: "Bad Request" });
       break;
     default:
