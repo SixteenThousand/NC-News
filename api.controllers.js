@@ -24,7 +24,7 @@ async function getArticlesParamId(request,response,next) {
 }
 
 async function getArticles(request,response,next) {
-  models.getAllArticles()
+  models.selectArticles(request.query)
     .then((data) => {
       response.status(200).send({ "articles": data });
     });

@@ -31,7 +31,21 @@ async function getArticleById(id) {
     });
 }
 
-async function getAllArticles() {
+// retrieves all data about articles based on a given set of filters.
+// @param filters: Object; the filters to be applied. Each key in the object 
+// should be a field in the articles table, and its value the value you want 
+// search results in that field to have
+async function selectArticles(filters) {
+  let filterQuery = "";
+  let filterParams = [];
+  if(filters !== undefined) {
+    for(const field in filters) {
+      filterParams.push(filters[field]); // this step MUST be done first!
+      filterQuery += `WHERE ${field} = $${filterParams.length}`;
+    }
+  }
+  console.log(`filterQuery: >>${filterQuery}<<`); // debug
+  console.log(`filterParams: >>${filterParams}<<`); // debug
   return db.query(
     `SELECT
       articles.author,
@@ -43,8 +57,10 @@ async function getAllArticles() {
       article_img_url,
       COUNT(comment_id)::INTEGER AS comment_count
       FROM articles JOIN comments ON articles.article_id = comments.comment_id
+      ${filterQuery}
       GROUP BY articles.article_id
-      ORDER BY articles.created_at DESC;`)
+      ORDER BY articles.created_at DESC;`,
+      filterParams)
     .then(({ rows }) => {
       return rows;
     });
@@ -141,7 +157,7 @@ async function getAllUsers() {
 module.exports = {
   getAllTopics,
   getArticleById,
-  getAllArticles,
+  selectArticles,
   getCommentsByArticle,
   insertComment,
   deleteCommentById,
