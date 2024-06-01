@@ -151,6 +151,35 @@ describe("GET /api/articles", () => {
         });
     }
   );
+  test("200: sends articles with the correct topic when queried",
+    async () => {
+      await request(app).get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          expect(body.articles).toHaveLength(1);
+          expect(body.articles[0]).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: "cats",
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+    }
+  );
+  test("200: sends an empty list when queried for a non-existent topic",
+    async () => {
+      await request(app).get("/api/articles?topic=blancmonge")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([]);
+        });
+    }
+  );
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
