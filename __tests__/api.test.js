@@ -112,11 +112,11 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-describe.only("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   test("model retrieves data with the right shape, sorted by date," +
     "latest first",
     async () => {
-      const articleData = await models.selectArticles();
+      const articleData = await models.selectArticles({});
       expect(Array.isArray(articleData)).toBe(true);
       expect(articleData[0]).toMatchObject({
         author: expect.any(String),
