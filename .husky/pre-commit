@@ -1,4 +1,20 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm test
+current_branch=$(git branch --show-current)
+main_branch='main'
+
+if test $current_branch = $main_branch
+then
+    read -p "Are you sure you want to commit on main? (y/n): " response
+    if test $response = "y"
+    then
+        echo "Okay then..."
+        exit 0
+    else
+        echo "Good. You made the right choice."
+        exit 1
+    fi
+else
+    exit 0
+fi

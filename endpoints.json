@@ -25,7 +25,7 @@
   },
   "GET /api/articles": {
     "description": "serves a list of all the articles, including a count of their comments, in reverse chronological order",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic"],
     "exampleResponse": { "articles": [
       {
         "article_id": 34,

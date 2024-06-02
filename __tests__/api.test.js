@@ -116,7 +116,7 @@ describe("GET /api/articles", () => {
   test("model retrieves data with the right shape, sorted by date," +
     "latest first",
     async () => {
-      const articleData = await models.getAllArticles();
+      const articleData = await models.selectArticles({});
       expect(Array.isArray(articleData)).toBe(true);
       expect(articleData[0]).toMatchObject({
         author: expect.any(String),
@@ -149,6 +149,84 @@ describe("GET /api/articles", () => {
           });
           expect(body.articles).toBeSortedBy("created_at",{ descending: true });
         });
+    }
+  );
+  test("200: sends articles with the correct topic when queried",
+    async () => {
+      await request(app).get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          expect(body.articles).toHaveLength(1);
+          expect(body.articles[0]).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: "cats",
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+    }
+  );
+  test("200: sends the correct articles when queried for a valid author",
+    async () => {
+      const { body } = await request(app)
+        .get("/api/articles?author=icellusedkars")
+        .expect(200);
+      expect(body.articles).toHaveLength(6);
+      body.articles.forEach((receivedArticle) => {
+        expect(receivedArticle).toMatchObject({
+          author: "icellusedkars",
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        });
+      });
+    }
+  );
+  test("200: sends correct articles when queried for a valid author & topic",
+    async () => {
+      const { body } = await request(app)
+        .get("/api/articles?author=butter_bridge&topic=mitch")
+        .expect(200);
+      expect(Array.isArray(body.articles)).toBe(true);
+      expect(body.articles).toHaveLength(4);
+      body.articles.forEach((receivedArticle) => {
+        expect(receivedArticle).toMatchObject({
+          author: "butter_bridge",
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: "mitch",
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        });
+      });
+    }
+  );
+  test("200: sends an empty list when queried for a non-existent " +
+    "topic and/or author",
+    async () => {
+      async function checkSendsEmpty(url) {
+        await request(app).get(url)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toEqual([]);
+          });
+      };
+      await Promise.all([
+        checkSendsEmpty("/api/articles?author=blancmonge"),
+        checkSendsEmpty("/api/articles?topic=cheesecake"),
+        checkSendsEmpty("/api/articles?author=blancmonge&topic=cheesecake"),
+      ]);
     }
   );
 });

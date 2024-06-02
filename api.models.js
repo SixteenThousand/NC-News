@@ -31,7 +31,24 @@ async function getArticleById(id) {
     });
 }
 
-async function getAllArticles() {
+// retrieves all data about articles based on a given set of filters.
+// @param filters: Object; the filters to be applied. Each key in the object 
+// should be a field in the articles table, and its value the value you want 
+// search results in that field to have
+async function selectArticles(filters) {
+  // deal with any filters that should be applied (see above)
+  let filterQuery = [];
+  let filterParams = [];
+  const validQueryFields = [ "topic", "author" ];
+  for(const field in filters) {
+    if(!validQueryFields.includes(field)) continue;
+    filterParams.push(filters[field]); // this step MUST be done first!
+    filterQuery.push(`articles.${field} = $${filterParams.length}`);
+  }
+  filterQuery = filterQuery.join(" and "); // converts [] to ""
+  // check to see whether any queries are actually being made
+  if(filterQuery.length > 0) filterQuery = "WHERE " + filterQuery;
+  // make the SQL query
   return db.query(
     `SELECT
       articles.author,
@@ -40,11 +57,13 @@ async function getAllArticles() {
       articles.topic,
       articles.votes,
       articles.created_at,
-      article_img_url,
+      articles.article_img_url,
       COUNT(comment_id)::INTEGER AS comment_count
       FROM articles JOIN comments ON articles.article_id = comments.comment_id
+      ${filterQuery}
       GROUP BY articles.article_id
-      ORDER BY articles.created_at DESC;`)
+      ORDER BY articles.created_at DESC;`,
+      filterParams)
     .then(({ rows }) => {
       return rows;
     });
@@ -141,7 +160,7 @@ async function getAllUsers() {
 module.exports = {
   getAllTopics,
   getArticleById,
-  getAllArticles,
+  selectArticles,
   getCommentsByArticle,
   insertComment,
   deleteCommentById,
