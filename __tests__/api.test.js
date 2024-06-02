@@ -77,6 +77,7 @@ describe("GET /api/articles/:article_id", () => {
       created_at: expect.any(Date),
       votes: expect.any(Number),
       article_img_url: expect.any(String),
+      comment_count: 11,
     });
   });
   test("200: sends correct data, given a valid id", async () => {
@@ -93,6 +94,7 @@ describe("GET /api/articles/:article_id", () => {
           created_at: expect.any(String), // this is different to the model test
           votes: expect.any(Number),
           article_img_url: expect.any(String),
+          comment_count: 11,
         });
       });
   });
