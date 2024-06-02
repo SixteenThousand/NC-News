@@ -11,7 +11,7 @@ async function getApiHelp(request,response,next) {
 
 async function getArticlesParamId(request,response,next) {
   if(request.params.article_id.match(/^\d+$/) !== null) {
-    models.getArticleById(request.params.article_id)
+    models.selectArticleById(request.params.article_id)
       .then((articleData) => {
         response.status(200).send(articleData);
       })

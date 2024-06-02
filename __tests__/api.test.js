@@ -67,7 +67,7 @@ describe("GET /api", () => {
 
 describe("GET /api/articles/:article_id", () => {
   test("model retrieves data with right shape", async () => {
-    const articleData = await models.getArticleById(1);
+    const articleData = await models.selectArticleById(1);
     expect(articleData).toMatchObject({
       author: expect.any(String),
       title: expect.any(String),

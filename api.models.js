@@ -15,7 +15,7 @@ async function getAllTopics() {
     });
 }
 
-async function getArticleById(id) {
+async function selectArticleById(id) {
   return db.query(
     `SELECT * FROM articles WHERE article_id = $1`,
     [id])
@@ -85,9 +85,9 @@ async function getCommentsByArticle(articleId) {
       if(rows.length > 0) { 
         return rows;
       } else {
-        // note here we use the error handling of getArticleById
+        // note here we use the error handling of selectArticleById
         // to throw a 404
-        return getArticleById(articleId)
+        return selectArticleById(articleId)
           .then(() => {
             return rows;
           });
@@ -159,7 +159,7 @@ async function getAllUsers() {
 
 module.exports = {
   getAllTopics,
-  getArticleById,
+  selectArticleById,
   selectArticles,
   getCommentsByArticle,
   insertComment,
