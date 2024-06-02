@@ -36,16 +36,19 @@ async function getArticleById(id) {
 // should be a field in the articles table, and its value the value you want 
 // search results in that field to have
 async function selectArticles(filters) {
-  let filterQuery = "";
+  // deal with any filters that should be applied (see above)
+  let filterQuery = [];
   let filterParams = [];
-  if(filters !== undefined) {
-    for(const field in filters) {
-      filterParams.push(filters[field]); // this step MUST be done first!
-      filterQuery += `WHERE ${field} = $${filterParams.length}`;
-    }
+  const validQueryFields = [ "topic", "author" ];
+  for(const field in filters) {
+    if(!validQueryFields.includes(field)) continue;
+    filterParams.push(filters[field]); // this step MUST be done first!
+    filterQuery.push(`articles.${field} = $${filterParams.length}`);
   }
-  console.log(`filterQuery: >>${filterQuery}<<`); // debug
-  console.log(`filterParams: >>${filterParams}<<`); // debug
+  filterQuery = filterQuery.join(" and "); // converts [] to ""
+  // check to see whether any queries are actually being made
+  if(filterQuery.length > 0) filterQuery = "WHERE " + filterQuery;
+  // make the SQL query
   return db.query(
     `SELECT
       articles.author,
@@ -54,7 +57,7 @@ async function selectArticles(filters) {
       articles.topic,
       articles.votes,
       articles.created_at,
-      article_img_url,
+      articles.article_img_url,
       COUNT(comment_id)::INTEGER AS comment_count
       FROM articles JOIN comments ON articles.article_id = comments.comment_id
       ${filterQuery}
