@@ -15,7 +15,7 @@ They've got articles on Lorem, Ispum, & Dipsum, so have a read\* at
 
 If you wish to develop this project on your own machine (or, in a much more 
 likely scenario, you're me from the future and have forgotten how to setup 
-this project), then please clone the project and run `setup.sh` from the 
+this project), then please clone the project and run `dev-setup.sh` from the 
 project's root directory.
 
 --- 
