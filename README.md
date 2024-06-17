@@ -18,6 +18,13 @@ likely scenario, you're me from the future and have forgotten how to setup
 this project), then please clone the project and run `dev-setup.sh` from the 
 project's root directory.
 
+### Dependencies
+- Node.js v21.7.2
+- PostgreSQL v16.1
+- for other dependencies, see `package.json`
+Please note that lower versions of the relevant software will likely also 
+work, but these were the versions used for development.
+
 --- 
 
 This portfolio project was created as part of a Digital Skills Bootcamp in 
