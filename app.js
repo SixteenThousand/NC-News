@@ -7,6 +7,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(controllers.logRequest);
 
 app.get("/api/topics", controllers.getTopics);
 app.get("/api", controllers.getApiHelp);
@@ -20,6 +21,7 @@ app.delete("/api/comments/:comment_id", controllers.deleteComment);
 app.get("/api/users", controllers.getUsers);
 
 // error handlers
+app.use(controllers.logError);
 app.use(controllers.handlePostgresErrors);
 app.use(controllers.handleCustomErrors);
 

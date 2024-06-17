@@ -98,6 +98,24 @@ async function handleCustomErrors(err,request,response,next) {
   }
 }
 
+// loggers
+function logRequest(request, response, next) {
+  console.log("--> %s %s\n  Time: %s",
+    request.method,
+    request.url,
+    new Date(Date.now()).toString());
+  console.log("  Body:");
+  console.group();
+  console.log(JSON.stringify(request.body,null,2));
+  console.groupEnd();
+  console.log("===============================");
+  next();
+}
+function logError(err,request,response,next) {
+  if(err) console.log(err);
+  next(err,request,response,next);
+}
+
 
 module.exports = {
   getTopics,
@@ -111,4 +129,6 @@ module.exports = {
   getUsers,
   handleCustomErrors,
   handlePostgresErrors,
+  logRequest,
+  logError,
 };
